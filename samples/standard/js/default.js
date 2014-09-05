@@ -9,6 +9,14 @@
     var sched = WinJS.Utilities.Scheduler;
     var ui = WinJS.UI;
 
+    MetroNode.async.each([1,2,3],
+        function (i, ic) {
+            return ic();
+        },
+        function(err){
+            var sdlk = 2;
+        });
+
     app.addEventListener("activated", function (args) {
         if (args.detail.kind === activation.ActivationKind.launch) {
             if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {

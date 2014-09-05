@@ -52,7 +52,7 @@
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>WinStore-MetroNode_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <NuGetPackageImportStamp>68e38dd7</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>45596cb7</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
@@ -93,10 +93,10 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\Npm.js.1.3.15.10\build\npm.js.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Npm.js.1.3.15.10\build\npm.js.targets'))" />
-    <Error Condition="!Exists('packages\MetroBrowserify.0.0.6\build\win\metrobrowserify.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MetroBrowserify.0.0.6\build\win\metrobrowserify.targets'))" />
+    <Error Condition="!Exists('packages\MetroBrowserify.0.0.7\build\win\metrobrowserify.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MetroBrowserify.0.0.7\build\win\metrobrowserify.targets'))" />
     <Error Condition="!Exists('packages\MetroNode.0.0.2\build\win\metronode.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\MetroNode.0.0.2\build\win\metronode.targets'))" />
   </Target>
-  <Import Project="packages\MetroBrowserify.0.0.6\build\win\metrobrowserify.targets" Condition="Exists('packages\MetroBrowserify.0.0.6\build\win\metrobrowserify.targets')" />
+  <Import Project="packages\MetroBrowserify.0.0.7\build\win\metrobrowserify.targets" Condition="Exists('packages\MetroBrowserify.0.0.7\build\win\metrobrowserify.targets')" />
   <Import Project="packages\MetroNode.0.0.2\build\win\metronode.targets" Condition="Exists('packages\MetroNode.0.0.2\build\win\metronode.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment
        that target and the DisableFastUpToDateCheck PropertyGroup. 

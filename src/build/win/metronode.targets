@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <IsStandAlone>true</IsStandAlone>
+    <StandAloneNamespace>MetroNode</StandAloneNamespace>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+    <MetroBrowserifyBuildDependsOn>BeforeMetroBrowserifyBuild;
+        $(MetroBrowserifyBuildDependsOn)
+    </MetroBrowserifyBuildDependsOn>
+  </PropertyGroup>
+  <Target AfterTargets="RestoreNpmPkgs" Name="BeforeMetroBrowserifyBuild">
+    <Delete Files="modules.node.js" />
+    <ItemGroup>
+      <PackageFiles Include="node_modules\*\package.json"/>
+      <PackageNames Include="$([System.IO.Directory]::GetParent(&quot;%(PackageFiles.RecursiveDir)&quot;).Name)" Exclude="browserify"/>
+    </ItemGroup>
+    <RemoveDuplicates Inputs="@(PackageNames)">
+      <Output ItemName="UniquePackageNames" TaskParameter="Filtered"/>
+    </RemoveDuplicates>
+    <WriteLinesToFile Encoding="ASCII" File="modules.node.js" Lines="@(UniquePackageNames->'exports.%(Identity)=require(&quot;%(Identity)&quot;);')" Overwrite="true"/>
+  </Target>
+</Project>
