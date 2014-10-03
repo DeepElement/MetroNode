@@ -52,7 +52,7 @@
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>WinStore-MetroNode_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <NuGetPackageImportStamp>4d5c91ce</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>0c996910</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
@@ -65,11 +65,8 @@
     <Content Include="images\splashscreen.scale-100.png" />
     <Content Include="images\storelogo.scale-100.png" />
     <Content Include="images\gray.png" />
-    <Content Include="js\api\db.node.js" />
-    <Content Include="js\api\index.node.js" />
     <Content Include="js\data.js" />
     <Content Include="js\default.js" />
-    <Content Include="js\helpers.node.js" />
     <Content Include="js\navigator.js" />
     <Content Include="metro.node.js" />
     <Content Include="npmPlaceholder.txt" />

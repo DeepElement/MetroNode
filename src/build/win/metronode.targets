@@ -16,18 +16,16 @@
     <Delete Files="$(MetroNodeScriptFileName)" />
     <ItemGroup>
       <PackageFiles Include="node_modules\*\package.json"/>
-      <PackageNames Include="$([System.IO.Directory]::GetParent(&#39;%(PackageFiles.RecursiveDir)&#39;).Name)" Exclude="browserify"/>
+      <PackageNames Include="$([System.IO.Directory]::GetParent(&quot;%(PackageFiles.RecursiveDir)&quot;).Name)" Exclude="browserify"/>
     </ItemGroup>
     <RemoveDuplicates Inputs="@(PackageNames)">
       <Output ItemName="UniquePackageNames" TaskParameter="Filtered"/>
     </RemoveDuplicates>
 
     <!-- Exports of Packages -->
-    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(UniquePackageNames->'exports.%(Identity)=require(&#39;%(Identity)&#39;);')" Overwrite="false" />
+    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(UniquePackageNames->'exports.%(Identity)=require(&quot;%(Identity)&quot;);')" Overwrite="false" />
   </Target>
   <Target Name="AfterMetroBrowserifyBuild">
     <Message Text="AfterMetroBrowserifyBuild"/>
-    <!-- Exports of Locals -->
-    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(JsFiles->'moduleToNamespace(&#39;$(MetroBrowserifyStandAloneNamespace)&#39;,&#39;$([System.String]::Copy('%(RecursiveDir)').Replace('/','//'))&#39;,&#39;%(FileName)&#39;);')" Overwrite="false" /> 
   </Target>
 </Project>
