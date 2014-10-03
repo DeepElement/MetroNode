@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <IsStandAlone>true</IsStandAlone>
-    <StandAloneNamespace>MetroNode</StandAloneNamespace>
+    <MetroBrowserifyIsStandAlone>true</MetroBrowserifyIsStandAlone>
+    <MetroBrowserifyStandAloneNamespace>MetroNode</MetroBrowserifyStandAloneNamespace>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    <MetroBrowserifyBuildDependsOn>BeforeMetroBrowserifyBuild;
-        $(MetroBrowserifyBuildDependsOn)
+    <MetroBrowserifyBuildDependsOn>
+        BeforeMetroBrowserifyBuild;
+        $(MetroBrowserifyBuildDependsOn);
+        AfterMetroBrowserifyBuild;
     </MetroBrowserifyBuildDependsOn>
+    <MetroNodeScriptFileName>metro.node.js</MetroNodeScriptFileName>
   </PropertyGroup>
   <Target AfterTargets="RestoreNpmPkgs" Name="BeforeMetroBrowserifyBuild">
-    <Delete Files="modules.node.js" />
+    <Message Text="BeforeMetroBrowserifyBuild"/>
+    <Delete Files="$(MetroNodeScriptFileName)" />
     <ItemGroup>
       <PackageFiles Include="node_modules\*\package.json"/>
-      <PackageNames Include="$([System.IO.Directory]::GetParent(&quot;%(PackageFiles.RecursiveDir)&quot;).Name)" Exclude="browserify"/>
+      <PackageNames Include="$([System.IO.Directory]::GetParent(&#39;%(PackageFiles.RecursiveDir)&#39;).Name)" Exclude="browserify"/>
     </ItemGroup>
     <RemoveDuplicates Inputs="@(PackageNames)">
       <Output ItemName="UniquePackageNames" TaskParameter="Filtered"/>
     </RemoveDuplicates>
-    <WriteLinesToFile Encoding="ASCII" File="modules.node.js" Lines="@(UniquePackageNames->'exports.%(Identity)=require(&quot;%(Identity)&quot;);')" Overwrite="true"/>
+
+    <!-- Exports of Packages -->
+    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(UniquePackageNames->'exports.%(Identity)=require(&#39;%(Identity)&#39;);')" Overwrite="false" />
+  </Target>
+  <Target Name="AfterMetroBrowserifyBuild">
+    <Message Text="AfterMetroBrowserifyBuild"/>
+    <!-- Exports of Locals -->
+    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(JsFiles->'moduleToNamespace(&#39;$(MetroBrowserifyStandAloneNamespace)&#39;,&#39;$([System.String]::Copy('%(RecursiveDir)').Replace('/','//'))&#39;,&#39;%(FileName)&#39;);')" Overwrite="false" /> 
   </Target>
 </Project>
