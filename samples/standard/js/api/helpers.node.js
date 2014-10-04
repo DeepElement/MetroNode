@@ -1,8 +1,9 @@
 ﻿var uuid = require("uuid");
-console.log(uuid.v4());
 
-exports.doSomeWork = function () {
-    console.log('work done!');
+exports.getRandomInt = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-console.log("js.helpers loaded");
+exports.getUUID = function(){
+    return uuid.v4();
+}

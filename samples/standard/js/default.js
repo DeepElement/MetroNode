@@ -44,5 +44,17 @@
         app.sessionState.history = nav.history;
     };
 
+
+    // Example of accessing the MetroNode api from WinJS files
+    MetroNode.js.api.db.users.getById({
+        id: 'toddpi314'
+    },
+    function (err, user) {
+        if (err)
+            console.error(err);
+        // Found some users from the web!
+        console.log(user);
+    });
+
     app.start();
 })();

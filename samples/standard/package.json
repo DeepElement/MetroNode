@@ -6,6 +6,7 @@
     "uniq": "*",
     "uuid": "*",
     "async": "*",
-    "browserify": "~5.11.1"
+    "browserify": "~5.11.1",
+    "moment":  "*"
   }
 }
