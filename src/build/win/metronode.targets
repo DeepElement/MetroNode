@@ -4,28 +4,54 @@
     <MetroBrowserifyIsStandAlone>true</MetroBrowserifyIsStandAlone>
     <MetroBrowserifyStandAloneNamespace>MetroNode</MetroBrowserifyStandAloneNamespace>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    <MetroBrowserifyBuildDependsOn>
-        BeforeMetroBrowserifyBuild;
-        $(MetroBrowserifyBuildDependsOn);
-        AfterMetroBrowserifyBuild;
-    </MetroBrowserifyBuildDependsOn>
-    <MetroNodeScriptFileName>metro.node.js</MetroNodeScriptFileName>
+    <MetroNodeScriptFileName>.metro.node.js</MetroNodeScriptFileName>
   </PropertyGroup>
-  <Target AfterTargets="RestoreNpmPkgs" Name="BeforeMetroBrowserifyBuild">
-    <Message Text="BeforeMetroBrowserifyBuild"/>
-    <Delete Files="$(MetroNodeScriptFileName)" />
+
+  <Target Name="CreateEntryModule" BeforeTargets="MetroBrowserifySetupNpmDependencies" >
+    <Message Text="===>CreateEntryModule" />
+    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines=" " Overwrite="true" />
+    <ItemGroup>
+      <MetroNodeEntryModule Include="$(ProjectDir)\$(MetroNodeScriptFileName)" ></MetroNodeEntryModule>
+      <PackagingOutputs Include="@(MetroNodeEntryModule -> '%(FullPath)')">
+        <OutputGroup>ContentFilesProjectOutputGroup</OutputGroup>
+        <ProjectName>$(ProjectName)</ProjectName>
+        <TargetPath>%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+      </PackagingOutputs>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="BeforeMetroBrowserifyBuild" AfterTargets="RestoreNpmPkgs;GetPackagingOutputs" BeforeTargets="MetroBrowserifyCleanCacheRecords">
+    <Message Text="===>BeforeMetroBrowserifyBuild" />
+
     <ItemGroup>
       <PackageFiles Include="node_modules\*\package.json"/>
       <PackageNames Include="$([System.IO.Directory]::GetParent(&quot;%(PackageFiles.RecursiveDir)&quot;).Name)" Exclude="browserify"/>
+      <_RequireImportFiles Include="$(ProjectDir)\**\*.node.js" Exclude="$(ProjectDir)\bin\**\*.*" />
+      <RequireImportFiles Include="@(_RequireImportFiles)">
+        <Namespace>$([System.String]::Copy('%(RecursiveDir)').Replace('\','.'))$([System.String]::Copy('%(FileName)').Replace('.node',''))</Namespace>
+        <Module>./$([System.String]::Copy('%(RecursiveDir)').Replace('\','/'))%(FileName)%(Extension)</Module>
+      </RequireImportFiles>
+
+      <PreScriptLine Include="line01">
+        <Text>
+          function a(e,t,n){var r=e,i=t.split("."),s%3Bwhile(i.length>0){s=i.shift()%3Bif(!r[s]){if(i.length>0)r[s]={}%3Belse{r[s]=n}}r=r[s]}}%3B
+        </Text>
+      </PreScriptLine>
+      <PreScriptLineText Include="%(PreScriptLine.Text)" />
     </ItemGroup>
+
     <RemoveDuplicates Inputs="@(PackageNames)">
       <Output ItemName="UniquePackageNames" TaskParameter="Filtered"/>
     </RemoveDuplicates>
 
+    <!-- Append Pre-script -->
+    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(PreScriptLineText)" Overwrite="true" />
+
     <!-- Exports of Packages -->
     <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(UniquePackageNames->'exports.%(Identity)=require(&quot;%(Identity)&quot;);')" Overwrite="false" />
-  </Target>
-  <Target Name="AfterMetroBrowserifyBuild">
-    <Message Text="AfterMetroBrowserifyBuild"/>
+
+    <!-- Exports of custom libraries -->
+    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(RequireImportFiles -> 'a(exports,&quot;%(Namespace)&quot;,require(&quot;%(Module)&quot;));')" Overwrite="false" />
+
   </Target>
 </Project>

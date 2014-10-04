@@ -176,3 +176,6 @@ FakesAssemblies/
 /samples/standard/.bin/node.cmd
 /src/*.nupkg
 /samples/standard/modules.node.js
+
+
+.metro.node.js
