@@ -49,35 +49,46 @@
     <RequiredPlatformVersion>8.1</RequiredPlatformVersion>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
-    
     <PackageCertificateKeyFile>universal_apps_TemporaryKey.pfx</PackageCertificateKeyFile>
-    
+    <NuGetPackageImportStamp>59fcb89b</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include=".bin\node.cmd" />
     <Content Include="default.html" />
     <Content Include="images\logo.png" />
     <Content Include="images\smalllogo.png" />
     <Content Include="images\splashscreen.png" />
     <Content Include="images\storelogo.png" />
     <Content Include="css\default.css" />
+    <Content Include="npmPlaceholder.txt" />
+    <Content Include="packages.config" />
     <Content Include="pages\hub\hub.html" />
     <Content Include="pages\hub\hub.css" />
     <Content Include="pages\hub\section3Page.html" />
     <Content Include="pages\section\section.html" />
     <Content Include="pages\section\section.js" />
     <Content Include="pages\section\section.css" />
-    
     <None Include="universal_apps_TemporaryKey.pfx" />
-    
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="Microsoft.WinJS.2.0, Version=1.0" />
   </ItemGroup>
   <Import Project="..\universal_apps.Shared\universal_apps.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
+  <Import Project="..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets" Condition="Exists('..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets'))" />
+    <Error Condition="!Exists('..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets'))" />
+    <Error Condition="!Exists('..\..\packages\MetroNode.0.1.3\build\win\metronode.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MetroNode.0.1.3\build\win\metronode.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets" Condition="Exists('..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets')" />
+  <Import Project="..\..\packages\MetroNode.0.1.3\build\win\metronode.targets" Condition="Exists('..\..\packages\MetroNode.0.1.3\build\win\metronode.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment
        that target and the DisableFastUpToDateCheck PropertyGroup. 
        Other similar extension points exist, see Microsoft.Common.targets.
