@@ -52,7 +52,7 @@
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>universal_apps_sample_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <NuGetPackageImportStamp>2af958ff</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>1ef7e7c6</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
@@ -61,6 +61,7 @@
     <Content Include="..\..\package.json">
       <Link>package.json</Link>
     </Content>
+    <None Include=".bin\node.cmd" />
     <Content Include="default.html" />
     <Content Include="images\logo.png" />
     <Content Include="images\smalllogo.png" />
@@ -82,19 +83,19 @@
   </ItemGroup>
   <Import Project="..\universal_apps_sample.Shared\universal_apps_sample.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
-  <Import Project="..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets" Condition="Exists('..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
     <Error Condition="!Exists('..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets'))" />
     <Error Condition="!Exists('..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets'))" />
-    <Error Condition="!Exists('..\..\packages\MetroNode.0.1.3\build\win\metronode.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MetroNode.0.1.3\build\win\metronode.targets'))" />
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\..\packages\MetroNode.0.1.4\build\metronode.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MetroNode.0.1.4\build\metronode.targets'))" />
   </Target>
-  <Import Project="..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets" Condition="Exists('..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets')" />
-  <Import Project="..\..\packages\MetroNode.0.1.3\build\win\metronode.targets" Condition="Exists('..\..\packages\MetroNode.0.1.3\build\win\metronode.targets')" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets" Condition="Exists('..\..\packages\Npm.js.1.3.15.10\build\npm.js.targets')" />
+  <Import Project="..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets" Condition="Exists('..\..\packages\MetroBrowserify.0.1.3\build\win\metrobrowserify.targets')" />
+  <Import Project="..\..\packages\MetroNode.0.1.4\build\metronode.targets" Condition="Exists('..\..\packages\MetroNode.0.1.4\build\metronode.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment
        that target and the DisableFastUpToDateCheck PropertyGroup. 
        Other similar extension points exist, see Microsoft.Common.targets.
