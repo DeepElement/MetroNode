@@ -24,7 +24,7 @@
     <Message Text="===>BeforeMetroBrowserifyBuild" />
 
     <ItemGroup>
-      <PackageFiles Include="node_modules\*\package.json"/>
+      <PackageFiles Include="$(SolutionDir)\node_modules\*\package.json"/>
       <PackageNames Include="$([System.IO.Directory]::GetParent(&quot;%(PackageFiles.RecursiveDir)&quot;).Name)" Exclude="browserify"/>
       <_RequireImportFiles Include="$(ProjectDir)\**\*.node.js" Exclude="$(ProjectDir)\bin\**\*.*" />
       <RequireImportFiles Include="@(_RequireImportFiles)">

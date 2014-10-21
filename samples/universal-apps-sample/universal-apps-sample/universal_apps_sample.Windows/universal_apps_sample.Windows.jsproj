@@ -58,7 +58,9 @@
     <AppxManifest Include="package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include=".bin\node.cmd" />
+    <Content Include="..\..\package.json">
+      <Link>package.json</Link>
+    </Content>
     <Content Include="default.html" />
     <Content Include="images\logo.png" />
     <Content Include="images\smalllogo.png" />

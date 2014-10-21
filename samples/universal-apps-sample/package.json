@@ -1,8 +1,12 @@
 {
-  "name": "someProj",
-  "version": "0.0.0",
-  "description": "",
-  "scripts": { },
-  "author": "",
-  "license": ""
+  "name": "winstore-metronode",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "uniq": "*",
+    "uuid": "*",
+    "async": "*",
+    "browserify": "~5.11.1",
+    "moment":  "*"
+  }
 }

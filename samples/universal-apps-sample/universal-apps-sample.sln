@@ -11,6 +11,13 @@ Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "universal_apps_sample.Windo
 EndProject
 Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "universal_apps_sample.WindowsPhone", "universal-apps-sample\universal_apps_sample.WindowsPhone\universal_apps_sample.WindowsPhone.jsproj", "{572B266E-32B4-4F98-A4CC-E39C4061977A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E9732353-F900-4EAF-9EB8-59FF5162188A}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		universal-apps-sample\universal_apps_sample.Shared\universal_apps_sample.Shared.projitems*{572b266e-32b4-4f98-a4cc-e39c4061977a}*SharedItemsImports = 5
