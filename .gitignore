@@ -179,3 +179,5 @@ FakesAssemblies/
 
 
 .metro.node.js
+
+.*
