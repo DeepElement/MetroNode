@@ -8,3 +8,4 @@ packages
 *.cache
 node_modules
 *.nupkg
+npm-debug.logd
