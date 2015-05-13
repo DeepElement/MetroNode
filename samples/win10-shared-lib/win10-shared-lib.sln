@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "wup-app", "wup-app\wup-app.jsproj", "{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "wup-shared", "wup-shared\wup-shared.shproj", "{922E73DE-0044-466B-8F78-BE94C54CDCA0}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		wup-shared\wup_shared.projitems*{abb017d4-f638-4a6d-97c6-f08f7e264ede}*SharedItemsImports = 5
+		wup-shared\wup_shared.projitems*{922e73de-0044-466b-8f78-be94c54cdca0}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|ARM.ActiveCfg = Debug|ARM
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|ARM.Build.0 = Debug|ARM
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|ARM.Deploy.0 = Debug|ARM
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|x64.ActiveCfg = Debug|x64
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|x64.Build.0 = Debug|x64
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|x64.Deploy.0 = Debug|x64
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|x86.ActiveCfg = Debug|x86
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|x86.Build.0 = Debug|x86
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Debug|x86.Deploy.0 = Debug|x86
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|ARM.ActiveCfg = Release|ARM
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|ARM.Build.0 = Release|ARM
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|ARM.Deploy.0 = Release|ARM
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|x64.ActiveCfg = Release|x64
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|x64.Build.0 = Release|x64
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|x64.Deploy.0 = Release|x64
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|x86.ActiveCfg = Release|x86
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|x86.Build.0 = Release|x86
+		{ABB017D4-F638-4A6D-97C6-F08F7E264EDE}.Release|x86.Deploy.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -9,79 +9,34 @@
     <MetroNodeBuildDependsOn>
         MetroNode_NPM_Init;
         MetroNode_Clean_Cache;
-        MetroNode_Compile;
-        MetroNode_Create_EntryModule;
         MetroNode_Build_EntryModule;
+        MetroNode_Compile_EntryModule;
         MetroNode_Update_BOM;
         MetroNode_Package;
+        MetroNode_Log;
     </MetroNodeBuildDependsOn>
   </PropertyGroup>
   
-  <Target Name="MetroNodeEntry" AfterTargets="ResotreNpmPkgs;GetPackagingOutputs">
-    <CallTarget Targets="MetroNodeBuild" />
-    <Message Text="Finale-Files: %(PackagingOutputs.Identity)  TargetPath:%(PackagingOutputs.TargetPath)"  Importance="high" />
+  <Target Name="MetroNodeEntry" AfterTargets="ResotreNpmPkgs;GetPackagingOutputs" DependsOnTargets="$(MetroNodeBuildDependsOn)">
   </Target>
  
-  <Target Name="MetroNodeBuild" DependsOnTargets="$(MetroNodeBuildDependsOn)">
-  </Target>
-  
   <Target Name="MetroNode_NPM_Init">
-    <Message Text="MetroNode_NPM_Init" />
     <Exec Command="npm install -g browserify@5.13.1" />
   </Target>
 
   <Target Name="MetroNode_Clean_Cache" DependsOnTargets="MetroNode_NPM_Init">
-    <ItemGroup>
-      <CacheFiles Include="$(ProjectDir)\**\*.cache" />
-      <CacheFiles Include="$(ProjectDir)\$(MetroNodeScriptFileName)" />
-    </ItemGroup>
-    <Delete Files="@(CacheFiles)" />
+    <PackagingOutputs Remove="@(PackagingOutputs)" Condition="'%(Extension)'=='.cache'"></PackagingOutputs>
   </Target>
 
-  <Target Name="MetroNode_Compile" DependsOnTargets="MetroNode_Build_EntryModule">
-    <ItemGroup>
-      <JsFiles Include="$(ProjectDir)\**\*.node.js" Exclude="$(ProjectDir)\bin\**\*.*" />
-    </ItemGroup>
-    <Exec Command="browserify %(JsFiles.Identity) -s MetroNode -o %(JsFiles.RootDir)%(JsFiles.Directory)%(JsFiles.Filename).js.metrobrowserify.cache" />
-  </Target>
-
-  <Target Name="MetroNode_Package" DependsOnTargets="MetroNode_Compile">
-     <ItemGroup>
-      <_AddToPackageFiles Include="$(ProjectDir)\**\*.metrobrowserify.cache" Exclude="$(ProjectDir)\bin\**\*.*;$(ProjectDir)\bld\**\*.*" ></_AddToPackageFiles>
-      <PackagingOutputs Remove="@(PackagingOutputs)" Condition="'%(Extension)'=='.js' AND Exists('%(RootDir)%(Directory)%(Filename)%(Extension).metrobrowserify.cache')"></PackagingOutputs>
-      <PackagingOutputs Include="@(_AddToPackageFiles -> '%(FullPath)')">
-        <OutputGroup>Content</OutputGroup>
-        <ProjectName>$(ProjectName)</ProjectName>
-        <TargetPath>%(RecursiveDir)$([System.String]::Copy('%(Filename)').Replace('.metrobrowserify',''))</TargetPath>
-      </PackagingOutputs>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="MetroNode_Update_BOM" DependsOnTargets="MetroNode_Package">
-    <WriteLinesToFile Condition="Exists('%(CacheFiles.FullPath)')" File="%(CacheFiles.FullPath)" Lines="$([System.IO.File]::ReadAllText(%(CacheFiles.FullPath)))" Overwrite="true" Encoding="utf-8" />
-  </Target>
-
-  <Target Name="MetroNode_Create_EntryModule" DependsOnTargets="MetroNode_Update_BOM">
-    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines=" " Overwrite="true" />
-    <ItemGroup>
-      <MetroNodeEntryModule Include="@(PackagingOutputs)" Condition="'$(FileName)$(Extension)' == $(MetroNodeScriptFileName)" ></MetroNodeEntryModule>
-      <PackagingOutputs Remove="@(MetroNodeEntryModule -> '%(FullPath)')" />
-      <PackagingOutputs Include="@(MetroNodeEntryModule -> '%(FullPath)')">
-        <OutputGroup>ContentFilesProjectOutputGroup</OutputGroup>
-        <ProjectName>$(ProjectName)</ProjectName>
-        <TargetPath>%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-      </PackagingOutputs>
-    </ItemGroup>
-  </Target>
 
   <Target Name="MetroNode_Build_EntryModule" DependsOnTargets="MetroNode_Clean_Cache" >
     <ItemGroup>
       <PackageFiles Include="$(SolutionDir)\node_modules\*\package.json"/>
       <PackageNames Condition="Exists('%(PackageFiles.FullPath)')" Include="$([System.IO.Directory]::GetParent(&quot;%(PackageFiles.RecursiveDir)&quot;).Name)" Exclude="browserify"/>
-      <_RequireImportFiles Include="$(ProjectDir)\**\*.node.js" Exclude="$(ProjectDir)\bin\**\*.*" />
+      <_RequireImportFiles Include="@(PackagingOutputs)" Condition="'%(Extension)'=='.js' and $([System.String]::Copy(%(Filename)).EndsWith('.node'))" />
       <RequireImportFiles Include="@(_RequireImportFiles)">
-        <Namespace>$([System.String]::Copy('%(RecursiveDir)').Replace('\','.'))$([System.String]::Copy('%(FileName)').Replace('.node',''))</Namespace>
-        <Module>./$([System.String]::Copy('%(RecursiveDir)').Replace('\','/'))%(FileName)%(Extension)</Module>
+        <Namespace>$([System.String]::Copy('%(TargetPath)').Replace('\','.').Replace('.node.js',''))</Namespace>
+        <Module>$([System.String]::Copy('%(FullPath)').Replace('\','/'))</Module>
       </RequireImportFiles>
 
       <PreScriptLine Include="line01">
@@ -91,6 +46,10 @@
       </PreScriptLine>
       <PreScriptLineText Include="%(PreScriptLine.Text)" />
     </ItemGroup>
+    
+    <Message Text="_RequireImportFiles: FullPath:%(_RequireImportFiles.FullPath) FileName:%(_RequireImportFiles.FileName) TargetPath:%(_RequireImportFiles.TargetPath)"  Importance="high" />
+    <Message Text="RequireImportFiles: %(RequireImportFiles.Namespace)  TargetPath:%(RequireImportFiles.Module)"  Importance="high" />
+ 
 
     <RemoveDuplicates Inputs="@(PackageNames)">
       <Output ItemName="UniquePackageNames" TaskParameter="Filtered"/>
@@ -104,5 +63,46 @@
 
     <!-- Exports of custom libraries -->
     <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(RequireImportFiles -> 'a(exports,&quot;%(Namespace)&quot;,require(&quot;%(Module)&quot;));')" Overwrite="false" />
+  </Target>
+  
+  <Target Name="MetroNode_Compile_EntryModule" DependsOnTargets="MetroNode_Build_EntryModule">
+     <ItemGroup>
+      <JsFiles Include="$(MetroNodeScriptFileName)" ></JsFiles>
+    </ItemGroup>
+    <Exec Command="browserify %(JsFiles.Identity) -s MetroNode -o %(JsFiles.RootDir)%(JsFiles.Directory)%(JsFiles.Filename).js.metrobrowserify.cache" />
+  </Target>
+ 
+   <Target Name="MetroNode_Update_BOM" DependsOnTargets="MetroNode_Compile_EntryModule">
+    <WriteLinesToFile Condition="Exists('%(CacheFiles.FullPath)')" File="%(CacheFiles.FullPath)" Lines="$([System.IO.File]::ReadAllText(%(CacheFiles.FullPath)))" Overwrite="true" Encoding="utf-8" />
+  </Target>
+
+ 
+  <Target Name="MetroNode_Package" DependsOnTargets="MetroNode_Update_BOM">
+     <ItemGroup>
+      <_AddToPackageFiles Include="$(ProjectDir)\**\*.metrobrowserify.cache" Exclude="$(ProjectDir)\bin\**\*.*;$(ProjectDir)\bld\**\*.*" ></_AddToPackageFiles>
+      <PackagingOutputs Remove="@(PackagingOutputs)" Condition="'%(Extension)'=='.js' AND Exists('%(RootDir)%(Directory)%(Filename)%(Extension).metrobrowserify.cache')"></PackagingOutputs>
+      <PackagingOutputs Include="@(_AddToPackageFiles -> '%(FullPath)')">
+        <OutputGroup>Content</OutputGroup>
+        <ProjectName>$(ProjectName)</ProjectName>
+        <TargetPath>%(RecursiveDir)$([System.String]::Copy('%(Filename)').Replace('.metrobrowserify',''))</TargetPath>
+      </PackagingOutputs>
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="MetroNode_Log" DependsOnTargets="MetroNode_Package">
+    <Message Text="Finale-Files: %(PackagingOutputs.Identity)  TargetPath:%(PackagingOutputs.TargetPath)"  Importance="high" />
+  </Target>
+
+  <Target Name="MetroNode_Create_EntryModule" DependsOnTargets="MetroNode_Clean_Cache">
+    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines=" " Overwrite="true" />
+    <ItemGroup>
+      <MetroNodeEntryModule Include="@(PackagingOutputs)" Condition="'$(FileName)$(Extension)' == $(MetroNodeScriptFileName)" ></MetroNodeEntryModule>
+      <PackagingOutputs Remove="@(MetroNodeEntryModule -> '%(FullPath)')" />
+      <PackagingOutputs Include="@(MetroNodeEntryModule -> '%(FullPath)')">
+        <OutputGroup>ContentFilesProjectOutputGroup</OutputGroup>
+        <ProjectName>$(ProjectName)</ProjectName>
+        <TargetPath>%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+      </PackagingOutputs>
+    </ItemGroup>
   </Target>
 </Project>
