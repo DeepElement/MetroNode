@@ -6,6 +6,7 @@
     <SharedGUID>922e73de-0044-466b-8f78-be94c54cdca0</SharedGUID>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)secret.node.js" />
+    <Content Include="$(MSBuildThisFileDirectory)Folder with Spaces\module with spaces.node.js" />
+    <Content Include="$(MSBuildThisFileDirectory)shared-api.node.js" />
   </ItemGroup>
 </Project>

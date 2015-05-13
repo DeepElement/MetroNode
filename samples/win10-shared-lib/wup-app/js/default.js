@@ -16,8 +16,11 @@
                 
 			    inProjectOutputElems = WinJS.Utilities.query("#sharedOutput");
 			    if (inProjectOutputElems.length > 0)
-			        inProjectOutputElems[0].innerHTML = MetroNode.secret.sharedMethod();
+			        inProjectOutputElems[0].innerHTML = MetroNode["shared-api"].sharedMethod();
 
+			    inProjectOutputElems = WinJS.Utilities.query("#spacedExample");
+			    if (inProjectOutputElems.length > 0)
+			        inProjectOutputElems[0].innerHTML = MetroNode["Folder with Spaces"]["module with spaces"].sampleMethod();
 			} else {
 				// TODO: This application has been reactivated from suspension.
 				// Restore application state here.
