@@ -2,26 +2,26 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    <MetroNodeScriptFileName>.metro.node.js</MetroNodeScriptFileName>
+    <MetroNodeScriptFileName>$(ProjectDir).metro.node.js</MetroNodeScriptFileName>
     <MetroBrowserifyIsStandAlone Condition=" '$(MetroBrowserifyIsStandAlone)' == '' ">false</MetroBrowserifyIsStandAlone>
     <MetroBrowserifyStandAloneNamespace Condition=" '$(MetroBrowserifyStandAloneNamespace)' == '' ">MetroBrowserify</MetroBrowserifyStandAloneNamespace>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
     <MetroNodeBuildDependsOn>
-        MetroNode_NPM_Init;
-        MetroNode_Clean_Cache;
-        MetroNode_Build_EntryModule;
-        MetroNode_Compile_EntryModule;
-        MetroNode_Update_BOM;
-        MetroNode_Package;
-        MetroNode_Log;
+      MetroNode_NPM_Init;
+      MetroNode_Clean_Cache;
+      MetroNode_Build_EntryModule;
+      MetroNode_Compile_EntryModule;
+      MetroNode_Update_BOM;
+      MetroNode_Package;
+      MetroNode_Log;
     </MetroNodeBuildDependsOn>
   </PropertyGroup>
-  
+
   <Target Name="MetroNodeEntry" AfterTargets="ResotreNpmPkgs;GetPackagingOutputs" DependsOnTargets="$(MetroNodeBuildDependsOn)">
   </Target>
- 
+
   <Target Name="MetroNode_NPM_Init">
-    <Exec Command="npm install -g browserify@5.13.1" />
+
   </Target>
 
   <Target Name="MetroNode_Clean_Cache" DependsOnTargets="MetroNode_NPM_Init">
@@ -30,9 +30,10 @@
 
 
   <Target Name="MetroNode_Build_EntryModule" DependsOnTargets="MetroNode_Clean_Cache" >
+    <MetroNode_GetNodeJSDeps PackageFile="$(SolutionDir)package.json">
+      <Output ItemName="PackageNames" TaskParameter="NodeJSDependencies" />
+    </MetroNode_GetNodeJSDeps>
     <ItemGroup>
-      <PackageFiles Include="$(SolutionDir)\node_modules\*\package.json"/>
-      <PackageNames Condition="Exists('%(PackageFiles.FullPath)')" Include="$([System.IO.Directory]::GetParent(&quot;%(PackageFiles.RecursiveDir)&quot;).Name)" Exclude="browserify"/>
       <_RequireImportFiles Include="@(PackagingOutputs)" Condition="'%(Extension)'=='.js' and $([System.String]::Copy(%(Filename)).EndsWith('.node'))" />
       <RequireImportFiles Include="@(_RequireImportFiles)">
         <Namespace>$([System.String]::Copy('%(TargetPath)').Replace('\','.').Replace('.node.js',''))</Namespace>
@@ -46,10 +47,6 @@
       </PreScriptLine>
       <PreScriptLineText Include="%(PreScriptLine.Text)" />
     </ItemGroup>
-    
-    <Message Text="_RequireImportFiles: FullPath:%(_RequireImportFiles.FullPath) FileName:%(_RequireImportFiles.FileName) TargetPath:%(_RequireImportFiles.TargetPath)"  Importance="high" />
-    <Message Text="RequireImportFiles: %(RequireImportFiles.Namespace)  TargetPath:%(RequireImportFiles.Module)"  Importance="high" />
- 
 
     <RemoveDuplicates Inputs="@(PackageNames)">
       <Output ItemName="UniquePackageNames" TaskParameter="Filtered"/>
@@ -64,21 +61,21 @@
     <!-- Exports of custom libraries -->
     <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(RequireImportFiles -> 'a(exports,&quot;%(Namespace)&quot;,require(&quot;%(Module)&quot;));')" Overwrite="false" />
   </Target>
-  
+
   <Target Name="MetroNode_Compile_EntryModule" DependsOnTargets="MetroNode_Build_EntryModule">
-     <ItemGroup>
+    <ItemGroup>
       <JsFiles Include="$(MetroNodeScriptFileName)" ></JsFiles>
     </ItemGroup>
-    <Exec Command="browserify %(JsFiles.Identity) -s MetroNode -o %(JsFiles.RootDir)%(JsFiles.Directory)%(JsFiles.Filename).js.metrobrowserify.cache" />
+    <Exec Command="browserify %(JsFiles.Identity) -s MetroNode -o %(JsFiles.RecursiveDir)%(JsFiles.Filename).js.metrobrowserify.cache" />
   </Target>
- 
-   <Target Name="MetroNode_Update_BOM" DependsOnTargets="MetroNode_Compile_EntryModule">
+
+  <Target Name="MetroNode_Update_BOM" DependsOnTargets="MetroNode_Compile_EntryModule">
     <WriteLinesToFile Condition="Exists('%(CacheFiles.FullPath)')" File="%(CacheFiles.FullPath)" Lines="$([System.IO.File]::ReadAllText(%(CacheFiles.FullPath)))" Overwrite="true" Encoding="utf-8" />
   </Target>
 
- 
+
   <Target Name="MetroNode_Package" DependsOnTargets="MetroNode_Update_BOM">
-     <ItemGroup>
+    <ItemGroup>
       <_AddToPackageFiles Include="$(ProjectDir)\**\*.metrobrowserify.cache" Exclude="$(ProjectDir)\bin\**\*.*;$(ProjectDir)\bld\**\*.*" ></_AddToPackageFiles>
       <PackagingOutputs Remove="@(PackagingOutputs)" Condition="'%(Extension)'=='.js' AND Exists('%(RootDir)%(Directory)%(Filename)%(Extension).metrobrowserify.cache')"></PackagingOutputs>
       <PackagingOutputs Include="@(_AddToPackageFiles -> '%(FullPath)')">
@@ -88,7 +85,7 @@
       </PackagingOutputs>
     </ItemGroup>
   </Target>
-  
+
   <Target Name="MetroNode_Log" DependsOnTargets="MetroNode_Package">
     <Message Text="Finale-Files: %(PackagingOutputs.Identity)  TargetPath:%(PackagingOutputs.TargetPath)"  Importance="high" />
   </Target>
@@ -105,4 +102,30 @@
       </PackagingOutputs>
     </ItemGroup>
   </Target>
+
+
+  <UsingTask TaskName="MetroNode_GetNodeJSDeps" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
+    <ParameterGroup>
+      <PackageFile Required="true" />
+      <NodeJSDependencies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Web.Extensions" />
+      <Reference Include="Microsoft.CSharp" />
+      <Using Namespace="System.Web.Script.Serialization"/>
+      <Using Namespace="Microsoft.CSharp.RuntimeBinder"/>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+              JavaScriptSerializer jss = new JavaScriptSerializer();
+              var package = jss.Deserialize<dynamic>(System.IO.File.ReadAllText(PackageFile));
+              var dependencies = package["dependencies"];
+        
+              var idx = 0;
+              NodeJSDependencies = new TaskItem[dependencies.Count];
+              foreach(var key in dependencies.Keys)
+                   NodeJSDependencies[idx++] = new TaskItem(key);
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
 </Project>
