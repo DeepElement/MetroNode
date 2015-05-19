@@ -28,11 +28,13 @@
     <PackagingOutputs Remove="@(PackagingOutputs)" Condition="'%(Extension)'=='.cache'"></PackagingOutputs>
   </Target>
 
-
   <Target Name="MetroNode_Build_EntryModule" DependsOnTargets="MetroNode_Clean_Cache" >
     <MetroNode_GetNodeJSDeps PackageFile="$(SolutionDir)package.json">
       <Output ItemName="PackageNames" TaskParameter="NodeJSDependencies" />
     </MetroNode_GetNodeJSDeps>
+    <MetroNode_GetEnv>
+      <Output ItemName="EnvironmentalVariables" TaskParameter="Variables" />
+    </MetroNode_GetEnv>
     <ItemGroup>
       <_RequireImportFiles Include="@(PackagingOutputs)" Condition="'%(Extension)'=='.js' and $([System.String]::Copy(%(Filename)).EndsWith('.node'))" />
       <RequireImportFiles Include="@(_RequireImportFiles)">
@@ -40,12 +42,16 @@
         <Module>$([System.String]::Copy('%(FullPath)').Replace('\','/'))</Module>
       </RequireImportFiles>
 
-      <PreScriptLine Include="line01">
+      <PreScriptLine Include="Line01">
         <Text>
           function a(e,t,n){var r=e,i=t.split("."),s%3Bwhile(i.length>0){s=i.shift()%3Bif(!r[s]){if(i.length>0)r[s]={}%3Belse{r[s]=n}}r=r[s]}}%3B
+          window.process = window.process || {}%3B
+          window.process.env = window.process.env || {}%3B
+          function b(k,v) { window.process.env[k] = v%3B  }%3B
         </Text>
       </PreScriptLine>
       <PreScriptLineText Include="%(PreScriptLine.Text)" />
+      <EnvVariableIncludes Include="b(%(EnvironmentalVariables.Identity))" />
     </ItemGroup>
 
     <RemoveDuplicates Inputs="@(PackageNames)">
@@ -54,6 +60,8 @@
 
     <!-- Append Pre-script -->
     <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(PreScriptLineText)" Overwrite="true" />
+    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(EnvVariableIncludes)" Overwrite="false" />
+
 
     <!-- Exports of Packages -->
     <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(UniquePackageNames->'exports.%(Identity)=require(&quot;%(Identity)&quot;);')" Overwrite="false" />
@@ -102,7 +110,33 @@
       </PackagingOutputs>
     </ItemGroup>
   </Target>
-
+  
+  <UsingTask TaskName="MetroNode_GetEnv" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
+    <ParameterGroup>
+      <Variables ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Runtime.Extensions" />
+      <Reference Include="System.Web" />
+      <Using Namespace="System.Web" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+            var localVars =  Environment.GetEnvironmentVariables();
+            Variables = new TaskItem[localVars.Count];
+            var idx = 0;
+            Func<string, string> sanatize = delegate(string source)
+                     {
+                     return HttpUtility.JavaScriptStringEncode(source).Replace("%","%25").Replace("$","%24").Replace("@","%40").Replace("'","%27").Replace(";","%3B").Replace("?","%3F").Replace("*","%2A");
+                     };
+            foreach (DictionaryEntry de in localVars) 
+            {
+              Variables[idx] = new TaskItem("'" + sanatize(de.Key.ToString()) + "','" + sanatize(de.Value.ToString()) + "'");
+              idx++;
+            }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
 
   <UsingTask TaskName="MetroNode_GetNodeJSDeps" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
     <ParameterGroup>
