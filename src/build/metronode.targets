@@ -74,7 +74,7 @@
     <ItemGroup>
       <JsFiles Include="$(MetroNodeScriptFileName)" ></JsFiles>
     </ItemGroup>
-    <Exec Command="$(SolutionDir)node_modules/browserify/bin/cmd.js %(JsFiles.Identity) -s MetroNode -o %(JsFiles.RecursiveDir)%(JsFiles.Filename).js.metrobrowserify.cache" />
+    <Exec Command="node $(SolutionDir)node_modules/browserify/bin/cmd.js %(JsFiles.Identity) -s MetroNode -o %(JsFiles.RecursiveDir)%(JsFiles.Filename).js.metrobrowserify.cache" />
   </Target>
 
   <Target Name="MetroNode_Update_BOM" DependsOnTargets="MetroNode_Compile_EntryModule">
