@@ -64,7 +64,7 @@
 
 
     <!-- Exports of Packages -->
-    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(UniquePackageNames->'exports.%(Identity)=require(&quot;%(Identity)&quot;);')" Overwrite="false" />
+    <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(UniquePackageNames->'exports[&quot;%(Identity)&quot;]=require(&quot;%(Identity)&quot;);')" Overwrite="false" />
 
     <!-- Exports of custom libraries -->
     <WriteLinesToFile Encoding="ASCII" File="$(MetroNodeScriptFileName)" Lines="@(RequireImportFiles -> 'a(exports,&quot;%(Namespace)&quot;,require(&quot;%(Module)&quot;));')" Overwrite="false" />
