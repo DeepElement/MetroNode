@@ -21,7 +21,7 @@
   </Target>
 
   <Target Name="MetroNode_NPM_Init">
-
+    <Exec Condition="!Exists('$(SolutionDir)node_modules/browserify/bin/cmd.js')" Command="npm install browserify --save-dev"></Exec>
   </Target>
 
   <Target Name="MetroNode_Clean_Cache" DependsOnTargets="MetroNode_NPM_Init">
@@ -80,7 +80,6 @@
   <Target Name="MetroNode_Update_BOM" DependsOnTargets="MetroNode_Compile_EntryModule">
     <WriteLinesToFile Condition="Exists('%(CacheFiles.FullPath)')" File="%(CacheFiles.FullPath)" Lines="$([System.IO.File]::ReadAllText(%(CacheFiles.FullPath)))" Overwrite="true" Encoding="utf-8" />
   </Target>
-
 
   <Target Name="MetroNode_Package" DependsOnTargets="MetroNode_Update_BOM">
     <ItemGroup>
