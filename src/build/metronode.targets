@@ -150,14 +150,16 @@
       <Using Namespace="Microsoft.CSharp.RuntimeBinder"/>
       <Code Type="Fragment" Language="cs">
         <![CDATA[
-              JavaScriptSerializer jss = new JavaScriptSerializer();
+             JavaScriptSerializer jss = new JavaScriptSerializer();
               var package = jss.Deserialize<dynamic>(System.IO.File.ReadAllText(PackageFile));
-              var dependencies = package["dependencies"];
-        
-              var idx = 0;
-              NodeJSDependencies = new TaskItem[dependencies.Count];
-              foreach(var key in dependencies.Keys)
-                   NodeJSDependencies[idx++] = new TaskItem(key);
+              if(package.GetType().GetProperty("dependencies") != null)
+              {
+                var dependencies = package["dependencies"];
+                var idx = 0;
+                NodeJSDependencies = new TaskItem[dependencies.Count];
+                foreach(var key in dependencies.Keys)
+                     NodeJSDependencies[idx++] = new TaskItem(key);
+              }
         ]]>
       </Code>
     </Task>
