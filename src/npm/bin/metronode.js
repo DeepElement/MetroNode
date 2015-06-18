@@ -5,6 +5,13 @@ var path = require('path'),
 var _exportsInject = 'function a(e,t,n){var r=e,i=t.split("."),s;while(i.length>0){s=i.shift();if(!r[s]){if(i.length>0)r[s]={};else{r[s]=n}}r=r[s]}};';
 var _processInject = 'window.process = window.process || {};window.process.env = window.process.env || {};function b(k,v) { window.process.env[k] = v;  };';
 
+String.prototype.replaceAll = function(search, replace) {
+    if (replace === undefined) {
+        return this.toString();
+    }
+    return this.split(search).join(replace);
+};
+
 var _constructor = function (options) {
 	this._sourceRoot = options.sourceRoot;
 	if (!this._sourceRoot)
@@ -39,7 +46,7 @@ _constructor.prototype._generate = function (callback) {
 				if (!isValid && that._envWhiteList.indexOf(envKey) > -1)
 					isValid = true;
 				if (isValid)
-					result += 'b(\'' + envKey + '\', \'' + that._env[envKey] + '\')\n';
+					result += 'b(\'' + envKey + '\', \'' + escape(that._env[envKey]) + '\')\n';
 			}
 			result += "\n";
 			return done();
@@ -55,10 +62,11 @@ _constructor.prototype._generate = function (callback) {
 
 			that._sourceFiles.forEach(function (item) {
 				var relativeModulePath = path.relative(that._sourceRoot, item);
-				var moduleApiKey = relativeModulePath.replace(path.sep, '.').replace('.js', '');
-				result += 'a(exports,"api.' + moduleApiKey + '", require("' + item + '")) \n';
+				var moduleApiKey = relativeModulePath.replaceAll(path.sep, '.').replaceAll('.js', '');
+				result += 'a(exports,\'' + moduleApiKey + '\', require(\'' + item.replaceAll('.js', '').replace(/\//g,"\\\\") + '\')) \n';
 			});
 			result += "\n";
+			
 			return done();
 		}
 	],
