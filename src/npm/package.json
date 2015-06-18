@@ -1,0 +1,36 @@
+{
+  "author": "Todd Morrison",
+  "name": "metronode",
+  "private": false,
+  "description": "A static API generator for CommonJS projects",
+  "version": "0.0.1",
+  "keywords": [
+    "browserify",
+	"commonjs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:DeepElement/MetroNode.git"
+  },
+  "licenses": [{
+    "type": "MIT",
+    "url": "http://opensource.org/licenses/MIT"
+  }],
+  "homepage": "https://github.com/DeepElement/MetroNode",
+  "author": {
+    "name": "Todd Morrison",
+    "email": "todd@deepelement.com",
+    "url": "http://www.deepelement.com"
+  },
+  "bin": {
+    "node-som": "./bin/metronode.js"
+  },
+  "main": "./bin/metronode",
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "test": "mocha"
+  }
+}
