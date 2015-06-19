@@ -63,7 +63,7 @@ _constructor.prototype._generate = function (callback) {
 			that._sourceFiles.forEach(function (item) {
 				var relativeModulePath = path.relative(that._sourceRoot, item);
 				var moduleApiKey = relativeModulePath.replaceAll(path.sep, '.').replaceAll('.node.js', '').replaceAll('.js', '');
-				result += 'a(exports,\'' + moduleApiKey + '\', require(\'' + item.replaceAll('.node.js', '').replaceAll('.js', '').replace(/\//g,"\\\\") + '\')) \n';
+				result += 'a(exports,\'' + moduleApiKey + '\', require(\'' + item.replaceAll('.js', '').replace(/\//g,"\\\\") + '\')) \n';
 			});
 			result += "\n";
 			
