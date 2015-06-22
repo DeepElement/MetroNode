@@ -7,7 +7,7 @@
   "name": "metronode",
   "private": false,
   "description": "A static API generator for CommonJS projects",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "keywords": [
     "browserify",
     "commonjs"

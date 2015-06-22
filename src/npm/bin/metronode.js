@@ -16,7 +16,7 @@ var _constructor = function (options) {
 	this._sourceRoot = options.sourceRoot;
 	if (!this._sourceRoot)
 		throw new Error("sourceRoot required");
-	
+
 	this._sourceFiles = options.sourceFiles;
 
 	if (!this._sourceFiles)
@@ -63,10 +63,10 @@ _constructor.prototype._generate = function (callback) {
 			that._sourceFiles.forEach(function (item) {
 				var relativeModulePath = path.relative(that._sourceRoot, item);
 				var moduleApiKey = relativeModulePath.replaceAll(path.sep, '.').replaceAll('.node.js', '').replaceAll('.js', '');
-				result += 'a(exports,\'' + moduleApiKey + '\', require(\'' + item.replaceAll('.js', '').replace(/\//g,"\\\\") + '\')) \n';
+				result += 'a(exports,\'' + moduleApiKey + '\', require(\'' + item.replaceAll('.js', '').replace(/\//g,path.sep) + '\')) \n';
 			});
 			result += "\n";
-			
+
 			return done();
 		}
 	],
